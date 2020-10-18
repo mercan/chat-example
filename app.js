@@ -16,4 +16,4 @@ const indexRoute = require('./routes/index');
 app.use('/', indexRoute);
 
 
-server.listen(3000, () => console.log("Sunucu Başlatıldı!"));
+server.listen(process.env.PORT || 3000, () => console.log("Sunucu Başlatıldı!"));
