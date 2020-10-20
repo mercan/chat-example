@@ -1,19 +1,23 @@
 const redis = require('redis');
 
-class Users {
+function Users() {
+	// Heroku
+	this.client = redis.createClient(process.env.REDIS_URL, {
+		password: process.env.REDIS_PASS,
+		no_ready_check: true,
+	});
 
-	constructor() {
-		// Heroku
-		this.client = redis.createClient(process.env.REDIS_URL);
+	this.client.on('connect', () => {   
+   	console.log('Redis Connected');
+	});
 
-		/* // Localhost
-		this.client = redis.createClient({
-			host: process.env.REDIS_URI, 
-			port: process.env.REDIS_PORT,
-			
-		});
-		*/
-	}
+	this.client.on('error', console.error);  
+	/* // Localhost
+	this.client = redis.createClient({
+		host: process.env.REDIS_URI, 
+		port: process.env.REDIS_PORT,
+	});
+	*/
 
 }
 
