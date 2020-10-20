@@ -7,6 +7,10 @@ class Users {
 			host: process.env.REDIS_URI, 
 			port: process.env.REDIS_PORT,
 		});
+
+		this.client.auth(process.env.REDIS_PASS, function (err) {
+    	if (err) throw err;
+		});
 	}
 
 }
@@ -37,17 +41,6 @@ Users.prototype.remove = function(room, userId) {
 		}
 	);
 };
-/*
-(err, users) => {
-		if (err) console.error(err);	
-	
-		for (let user in users) {
-			active.push(JSON.parse(users[user]));
-		}
-
-		return callback(active);
-	}
-	*/
 
 Users.prototype.list = function(room) {
 	return new Promise((resolve, reject) => {
