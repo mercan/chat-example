@@ -4,7 +4,6 @@ const socketApi = { io };
 
 const socketConnectVerify = require('./middleware/socketConnectVerify');
 
-const { getClients } = require('./utils/socket');
 const { formatMessage } = require('./utils/message');
 
 // Models
@@ -28,7 +27,6 @@ io.use(socketConnectVerify);
 io.on('connection', socket => { 
 	
 	socket.on('joinRoom', async ({ room }) => {
-		console.log("Girdi");
 		socket.join(room);
 		socket.joinedRoom = room;
 

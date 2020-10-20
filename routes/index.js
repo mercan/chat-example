@@ -8,4 +8,8 @@ router.get('/chat', async (req, res) => {
 	res.render('chat');
 });
 
+router.get('/register', async (req, res) => {
+	res.render('register');
+});
+
 module.exports = router;
