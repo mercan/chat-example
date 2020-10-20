@@ -6,10 +6,7 @@ class Users {
 		this.client = redis.createClient({
 			host: process.env.REDIS_URI, 
 			port: process.env.REDIS_PORT,
-		});
-
-		this.client.auth(process.env.REDIS_PASS, function (err) {
-    	if (err) throw err;
+			auth_pass: process.env.REDIS_PASS,
 		});
 	}
 
