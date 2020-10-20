@@ -16,6 +16,7 @@ const Users = require('./src/lib/Users');
 const botName = 'Chat Bot';
 
 const redisAdapter = require('socket.io-redis');
+
 io.adapter(redisAdapter(process.env.REDIS_URL, {
 	password: process.env.REDIS_PASS,
 	no_ready_check: true,
@@ -27,6 +28,7 @@ io.use(socketConnectVerify);
 io.on('connection', socket => { 
 	
 	socket.on('joinRoom', async ({ room }) => {
+		console.log("Girdi");
 		socket.join(room);
 		socket.joinedRoom = room;
 

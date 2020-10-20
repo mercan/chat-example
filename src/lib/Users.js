@@ -7,7 +7,7 @@ function Users() {
 		no_ready_check: true,
 	});
 
-	this.client.on('connect', () => {   
+	this.client.on('connect', () => {
    	console.log('Redis Connected');
 	});
 
