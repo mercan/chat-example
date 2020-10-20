@@ -61,7 +61,7 @@ io.on('connection', socket => {
     );
 	});
 
-	socket.on('disconnecting', async () => {
+	socket.on('disconnect', async () => {
 		const room = socket.joinedRoom;
 
 	  if (room) {
