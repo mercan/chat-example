@@ -28,7 +28,13 @@
 				})
 			}).then(response => response.json());
 
-			document.write(JSON.stringify(response));
+			if (response.code === 200) {
+				localStorage.setItem('auth_token', response.auth_token)
+			} else {
+				document.write("Username Kullanılıyor.");
+			}
+			
+			
 		});
 	</script>	
 </body>
