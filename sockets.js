@@ -1,70 +1,90 @@
+const socketio = require('socket.io');
+const io = socketio();
+const socketApi = { io };
+
 const socketConnectVerify = require('./middleware/socketConnectVerify');
-const sockets = {};
 
-const { getRealRooms, getUserJoinedRoom, getRoomOnlineCount } = require('./utils/socket');
+const { getClients } = require('./utils/socket');
 const { formatMessage } = require('./utils/message');
-const { userJoin, userLeave, getRoomUsers } = require('./utils/user');
 
+// Models
+const User = require('./models/User');
+
+// Libs
+const Users = require('./src/lib/Users');
 
 const botName = 'Chat Bot';
 
-sockets['/chat'] = server => {
-	const io = require('socket.io')(server);
-	//io.use(socketConnectVerify);
+const redisAdapter = require('socket.io-redis');
+io.adapter(redisAdapter({
+	host: process.env.REDIS_URI, 
+	port: process.env.REDIS_PORT,
+}));
 
-	io.on('connection', socket => { 
+io.use(socketConnectVerify);
+
+io.on('connection', socket => { 
+	
+	socket.on('joinRoom', async ({ room }) => {
+		socket.join(room);
+		socket.joinedRoom = room;
+
+		Users.upsert(room, socket.decode.userId, { socketId: socket.id, username: socket.decode.username });
 		
-		socket.on('joinRoom', item => {
-			socket.username = item.username;
-			userJoin(socket.id, item);
-			socket.join(item.room);
+		const returnUsername = [];
+		const users = await Users.list(room);
+		users.forEach(i => returnUsername.push(i.meta.username));
+		
+		socket.emit('message', formatMessage(botName, `Welcome to ${socket.decode.username}`));
 
-			// Kendisine Gönderiyor sadece.
-			socket.emit('message', formatMessage(botName, `Welcome to ${item.username}`));
+		socket.broadcast.to(room)
+    .emit(
+     	'message',
+     	formatMessage(botName, `${socket.decode.username} has joined the chat`)
+    );
 
-			// Kendisi hariç diğer kişilere gönderiyor.
-			socket.broadcast.to(item.room)
-      .emit(
-       'message',
-        formatMessage(botName, `${item.username} has joined the chat`)
-      );
+    io.to(room).emit('roomUsers', {
+    	room,
+    	users: returnUsername,
+    });
 
-      io.to(item.room).emit('roomUsers', {
-     		room: item.room,
-     		users: getRoomUsers(item.room)
-    	});
-
-    	io.to(item.room).emit('onlineCount', {
-     		onlineCount: getRoomOnlineCount(io, "/", item.room),
-    	});
-		});
-
-		socket.on('chatMessage', message => {
-    	io.to(getUserJoinedRoom(io, socket.id)).emit('message', formatMessage(socket.username, message));
-		});
-
-		socket.on('disconnecting', () => {
-	  	const user = userLeave(socket.id);
-
-	  	if (user) {
-	      io.to(user.room).emit(
-	        'message',
-	        formatMessage(botName, `${user.username} has left the chat`)
-	      );
-
-	      io.to(user.room).emit('onlineCount', {
-     			onlineCount: getRoomOnlineCount(io, "/", user.room) - 1,
-    		});
-
-	      // Send users and room info
-	      io.to(user.room).emit('roomUsers', {
-	        room: user.room,
-	        users: getRoomUsers(user.room)
-	      });
-    	}
-	  });
-
+  	io.to(room).emit('onlineCount', {
+  		onlineCount: [returnUsername.length]
+  	});
 	});
-}
 
-module.exports = sockets;
+	socket.on('chatMessage', message => {
+    io.to(socket.joinedRoom).emit(
+    	'message',
+    	formatMessage(socket.decode.username, message)
+    );
+	});
+
+	socket.on('disconnecting', async () => {
+		const room = socket.joinedRoom;
+
+	  if (room) {
+	  	Users.remove(room, socket.decode.userId);
+
+	  	const returnUsername = [];
+			const users = await Users.list(room);
+			users.forEach(i => returnUsername.push(i.meta.username));
+
+	    io.to(room).emit(
+	   	 'message',
+	    	formatMessage(botName, `${socket.decode.username} has left the chat`)
+	    );
+
+	    io.to(room).emit('onlineCount', { onlineCount: [returnUsername.length] });
+
+	    // Send users and room info
+	    io.to(room).emit('roomUsers', {
+	    	room,
+	    	users: returnUsername
+	    });
+    }
+	});
+
+});
+
+module.exports = socketApi;

@@ -6,14 +6,16 @@ const onlineCount = document.getElementById('onlineCount');
 
 
 // Get username and room from URL
-const { username, room } = Qs.parse(location.search, {
-  ignoreQueryPrefix: true
+const room = location.search.split("=")[1];
+
+const socket = io.connect('http://localhost:3000', {
+  query: {
+    token: localStorage.getItem('auth_token'),
+  }
 });
 
-const socket = io();
-
 // Join chatroom
-socket.emit('joinRoom', { username, room });
+socket.emit('joinRoom', { room });
 
 socket.on('onlineCount', data => {
   onlineCount.innerHTML = `<i class="fas fa-users"> Users : ${data.onlineCount}</i>`;
@@ -78,11 +80,33 @@ function outputRoomName(room) {
 }
 
 // Add users to DOM
-function outputUser(users) {
+function outputUser(usernames) {
   userList.innerHTML = '';
-  users.forEach(user => {
+
+  usernames.forEach(username => {
     const li = document.createElement('li');
-    li.innerText = user.username;
+    li.innerText = username;
     userList.appendChild(li);
   });
- }
+  
+}
+
+function HtmlTagsClear(input) {
+  const array = [];
+  let startIndex, endIndex;
+
+  for (let i = 0; i < input.length; i++) {
+    const index = input.charAt(i);
+
+    if (index === '>') {
+      startIndex = i;
+    } else if (index === '<') {
+      endIndex = i;
+    } else if (startIndex && endIndex) {
+      const value = input.slice(startIndex + 1, endIndex);
+      if (!array.includes(value)) array.push(value);
+      }
+    }
+
+  return array.join(' ');
+}  

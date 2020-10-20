@@ -8,5 +8,5 @@ module.exports = (socket, next) => {
     return next();
   }
 
-  return new Error('Authentication error');
+  return next(new Error('Authentication error'));
 };

@@ -1,12 +1,12 @@
 const jwt = require('jsonwebtoken');
 const cfg = require('../config/token');
 
-module.exports = name => {
+module.exports = (userId, username) => {
 	return jwt.sign(
 		{
-			name,
+			userId, username,
 		},
-		config.SECRET_KEY,
+		cfg.SECRET_KEY,
 		{
 			expiresIn: '30d' // 30 gün.
 		} 
