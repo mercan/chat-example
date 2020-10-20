@@ -29,12 +29,11 @@
 			}).then(response => response.json());
 
 			if (response.code === 200) {
-				localStorage.setItem('auth_token', response.auth_token)
+				localStorage.setItem('auth_token', response.auth_token);
+				window.location.replace('https://chatsocket-example.herokuapp.com/');
 			} else {
-				document.write("Username Kullanılıyor.");
+				document.write('Username Kullanılıyor.');
 			}
-			
-			
 		});
 	</script>	
 </body>
