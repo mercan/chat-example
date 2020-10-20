@@ -3,11 +3,16 @@ const redis = require('redis');
 class Users {
 
 	constructor() {
+		// Heroku
+		this.client = redis.createClient(process.env.REDIS_URL);
+
+		/* // Localhost
 		this.client = redis.createClient({
 			host: process.env.REDIS_URI, 
 			port: process.env.REDIS_PORT,
-			auth_pass: process.env.REDIS_PASS,
+			
 		});
+		*/
 	}
 
 }
