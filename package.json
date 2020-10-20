@@ -12,6 +12,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "cors": "^2.8.5",
     "crypto-js": "^4.0.0",
     "dayjs": "^1.9.3",
     "dotenv": "^8.2.0",
