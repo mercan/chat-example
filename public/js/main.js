@@ -8,7 +8,7 @@ const onlineCount = document.getElementById('onlineCount');
 // Get username and room from URL
 const room = location.search.split("=")[1];
 
-const socket = io.connect('http://localhost:3000', {
+const socket = io.connect('https://chatsocket-example.herokuapp.com/', {
   query: {
     token: localStorage.getItem('auth_token'),
   }
