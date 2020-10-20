@@ -16,10 +16,11 @@ const Users = require('./src/lib/Users');
 const botName = 'Chat Bot';
 
 const redisAdapter = require('socket.io-redis');
-io.adapter(redisAdapter({
-	host: process.env.REDIS_URI, 
-	port: process.env.REDIS_PORT,
+io.adapter(redisAdapter(process.env.REDIS_URL, {
+	password: process.env.REDIS_PASS,
+	no_ready_check: true,
 }));
+
 
 io.use(socketConnectVerify);
 
