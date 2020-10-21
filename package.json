@@ -1,19 +1,16 @@
 {
-  "name": "Game",
+  "name": "SocketChatExample",
   "version": "1.0.0",
   "description": "",
   "main": "app.js",
   "scripts": {
     "start": "node app.js",
-    "start-dev": "nodemon app.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start-dev": "nodemon app.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "cors": "^2.8.5",
-    "crypto-js": "^4.0.0",
     "dayjs": "^1.9.3",
     "dotenv": "^8.2.0",
     "ejs": "^3.1.5",
