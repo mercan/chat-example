@@ -12,13 +12,6 @@ function Users() {
 	});
 
 	this.client.on('error', console.error);  
-	/* // Localhost
-	this.client = redis.createClient({
-		host: process.env.REDIS_URI, 
-		port: process.env.REDIS_PORT,
-	});
-	*/
-
 }
 
 Users.prototype.upsert = function(room, userId, meta) {

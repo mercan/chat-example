@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const Message = new Schema({
-	room: { type: String, required: true },
+	room: { type: String, required: true, inique: true },
 
 	username: { type: String, required: true },
 
@@ -15,8 +15,6 @@ const Message = new Schema({
 	],
 
 	time: { type: Date, required: true },
-
-	deleted: { type: Boolean, default: false },
 
 	createdAt: { type: Date, default: Date.now() }
 }, { versionKey: false });

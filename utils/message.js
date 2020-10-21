@@ -1,11 +1,11 @@
 const dayjs = require('dayjs');
 require('dayjs/locale/tr')
 
-function formatMessage(username, message) {
+function formatMessage(username, message, time) {
   return {
     username,
     message,
-    time: dayjs().locale('tr').format('MMMM D, HH:mm')
+    time: time || dayjs().locale('tr').format('MMMM D, HH:mm'),
   };
 }
 

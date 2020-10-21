@@ -8,6 +8,7 @@ const onlineCount = document.getElementById('onlineCount');
 // Get username and room from URL
 const room = location.search.split("=")[1];
 
+// https://chatsocket-example.herokuapp.com/
 const socket = io.connect('https://chatsocket-example.herokuapp.com/', {
   query: {
     token: localStorage.getItem('auth_token'),
@@ -18,7 +19,7 @@ const socket = io.connect('https://chatsocket-example.herokuapp.com/', {
 socket.emit('joinRoom', { room });
 
 socket.on('onlineCount', data => {
-  onlineCount.innerHTML = `<i class="fas fa-users"> Users : ${data.onlineCount}</i>`;
+  onlineCount.innerHTML = `<i class="fas fa-users"> Users ${data.onlineCount}</i>`;
 });
 
 // Get room and users
