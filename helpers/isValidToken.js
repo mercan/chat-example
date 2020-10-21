@@ -7,8 +7,8 @@ module.exports = token => {
 	}
 
 	try {
-		var [decode, err]  = [jwt.verify(token, cfg.SECRET_KEY)];
-		return err ? false : decode;
+		const [decode, _]  = [jwt.verify(token, cfg.SECRET_KEY)];
+		return decode;
 	} catch (error) {
 		return false;
 	}

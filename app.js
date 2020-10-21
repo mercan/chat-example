@@ -3,10 +3,7 @@ const express = require('express');
 const app = express();
 const server = require('http').createServer(app);
 const bodyParser = require('body-parser');
-const cors = require('cors')
 require('./helpers/Database')();
-
-app.use(cors());
 
 app.set('view engine', 'ejs')
 app.use(express.static('public'))
