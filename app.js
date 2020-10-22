@@ -5,8 +5,8 @@ const server = require('http').createServer(app);
 const bodyParser = require('body-parser');
 require('./helpers/Database')();
 
-app.set('view engine', 'ejs')
-app.use(express.static('public'))
+app.set('view engine', 'ejs');
+app.use(express.static('public'));
 
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -15,8 +15,7 @@ app.use(bodyParser.json());
 
 // Sockets
 const socketServer = require('./sockets');
-const io = socketServer.io;
-io.attach(server);
+socketServer.io.attach(server);
 
 // Routes
 const indexRoute = require('./routes/index');

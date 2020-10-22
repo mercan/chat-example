@@ -91,23 +91,3 @@ function outputUser(usernames) {
   });
   
 }
-
-function HtmlTagsClear(input) {
-  const array = [];
-  let startIndex, endIndex;
-
-  for (let i = 0; i < input.length; i++) {
-    const index = input.charAt(i);
-
-    if (index === '>') {
-      startIndex = i;
-    } else if (index === '<') {
-      endIndex = i;
-    } else if (startIndex && endIndex) {
-      const value = input.slice(startIndex + 1, endIndex);
-      if (!array.includes(value)) array.push(value);
-      }
-    }
-
-  return array.join(' ');
-}  

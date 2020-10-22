@@ -2,7 +2,7 @@ const socketio = require('socket.io');
 const io = socketio();
 
 const dayjs = require('dayjs');
-require('dayjs/locale/tr')
+require('dayjs/locale/tr');
 
 const socketApi = { io };
 
@@ -11,9 +11,7 @@ const socketConnectVerify = require('./middleware/socketConnectVerify');
 const { formatMessage } = require('./utils/message');
 
 // Models
-const User = require('./models/User');
 const Room = require('./models/Room');
-
 
 // Libs
 const Users = require('./src/lib/Users');
@@ -42,13 +40,17 @@ io.on('connection', socket => {
 		
 		(await Users.list(room)).forEach(i => users.push(i.meta.username));
 	
+		// Kendisine gönderiyor.
 		socket.emit('message', formatMessage(botName, `Welcome to ${username}`));
 
+		// Kendisi hariç odada ki kişilere gönderiyor.
 		socket.broadcast.to(room)
-    	.emit('message', formatMessage(botName, `${username} has joined the chat`));
+    .emit('message', formatMessage(botName, `${username} has joined the chat`));
 
+    // Herkese gönderiyor.
     io.to(room).emit('roomUsers', { room, users });
 
+    // Herkese gönderiyor.
   	io.to(room).emit('onlineCount', { onlineCount: [users.length] });
 
   	// Daha önce atılmış mesajlar için.
@@ -62,7 +64,8 @@ io.on('connection', socket => {
 
 		if (roomMessages) {
 			for (let { username, message, date } of roomMessages.messages) {
-				io.to(room).emit('message', formatMessage(username, message, date));
+				// Kendisine gönderiyor.
+				socket.emit('message', formatMessage(username, message, date));
 			}
 		}
 
@@ -80,13 +83,14 @@ io.on('connection', socket => {
 		const { userId, username } = socket.decode;
 
 		if (room) {
-			var updateRoom = await Room.updateOne({ room }, {
+			await Room.updateOne({ room }, {
 				$push: {
 					messages: { userId, username, message, date }
 				}
 			});
 		}
 
+		// Herkese gönderiyor.
     io.to(room).emit('message', formatMessage(username, message));
 	});
 
@@ -101,15 +105,17 @@ io.on('connection', socket => {
 	  	
 			(await Users.list(room)).forEach(i => users.push(i.meta.username));
 
-	    io.to(room).emit(
+			// Herkese gönderiyor. (Kendisi ayrıldığı için göremiyor broadcast de yapılabilir.)
+	    socket.broadcast.to(room).emit(
 	    	'message',
 	    	formatMessage(botName, `${username} has left the chat`)
 	    );
 
-	    io.to(room).emit('onlineCount', { onlineCount: [users.length] });
+	    // Kendisi hariç diğer kişilere gönderiyor.
+	    socket.broadcast.to(room).emit('onlineCount', { onlineCount: [users.length] });
 
-	    // Send users and room info
-	    io.to(room).emit('roomUsers', { room, users });
+	    // Kendisi hariç diğer kişilere gönderiyor.
+	    socket.broadcast.to(room).emit('roomUsers', { room, users });
     }
 	});
 
