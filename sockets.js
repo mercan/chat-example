@@ -60,15 +60,19 @@ io.on('connection', socket => {
 
 		if (!roomMessages) {
 			new Room({ room }).save();
+			return;
 		}
 
-		if (roomMessages) {
-			for (let { username, message, date } of roomMessages.messages) {
-				// Kendisine gönderiyor.
-				socket.emit('message', formatMessage(username, message, date));
-			}
+		// Kendisine gönderiyor.
+		for (let { username, message, date } of roomMessages.messages) {
+			socket.emit('message', formatMessage(username, message, date));
 		}
+	});
 
+	socket.on('typing', () => {
+		if (!socket.joinedRoom) return;
+		
+		socket.broadcast.to(socket.joinedRoom).emit('typingUser', { username: socket.decode.username });
 	});
 
 	socket.on('chatMessage', async message => {

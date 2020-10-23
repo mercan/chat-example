@@ -1,4 +1,4 @@
-function getClients(io, ns, roomName, returnUser, socketUsername) {
+function getClients(io, ns, roomName, returnUser) {
 	const client = io.nsps[ns].adapter.rooms[roomName];
 	
 	if (client) {

@@ -3,15 +3,33 @@ const chatMessages = document.querySelector('.chat-messages');
 const roomName = document.getElementById('room-name');
 const userList = document.getElementById('users');
 const onlineCount = document.getElementById('onlineCount');
+const messageInput = document.getElementById('msg');
 
 
-// Get username and room from URL
-const room = location.search.split("=")[1];
+// Get room from URL
+const room = location.search.split('=')[1];
 
 // https://chatsocket-example.herokuapp.com/
 const socket = io.connect('https://chatsocket-example.herokuapp.com/', {
   query: {
     token: localStorage.getItem('auth_token'),
+  }
+});
+
+messageInput.addEventListener('keypress', () => socket.emit('typing'));
+
+socket.on('typingUser', ({ username }) => {
+  const chat_messages = document.querySelector('.chat-messages');
+  const typing = document.querySelector('.typing');
+
+  if (typing) {
+    typing.innerText = `${username} yazıyor...`;
+  } else {
+    const iElement = document.createElement('i');
+    iElement.classList.add('typing');
+    iElement.innerText = `${username} yazıyor...`;
+
+    chat_messages.appendChild(iElement);
   }
 });
 
@@ -34,6 +52,12 @@ socket.on('message', message => {
 
   // Scroll down
   chatMessages.scrollTop = chatMessages.scrollHeight;
+
+  const typing = document.querySelector('.typing');
+
+  if (typing) {
+    typing.remove();
+  }
 });
 
 // Message submit
