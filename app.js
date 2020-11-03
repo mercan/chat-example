@@ -3,6 +3,7 @@ const express = require('express');
 const app = express();
 const server = require('http').createServer(app);
 const bodyParser = require('body-parser');
+const cors = require('cors');
 require('./helpers/Database')();
 
 app.set('view engine', 'ejs');
@@ -16,6 +17,10 @@ app.use(bodyParser.json());
 // Sockets
 const socketServer = require('./sockets');
 socketServer.io.attach(server);
+
+app.use(cors({
+  origin: 'http://chatsocket-example.herokuapp.com'
+}));
 
 // Routes
 const indexRoute = require('./routes/index');
