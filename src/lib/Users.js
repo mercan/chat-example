@@ -41,6 +41,17 @@ Users.prototype.remove = function(room, userId) {
 	);
 };
 
+Users.prototype.keys = function() {
+	return new Promise((resolve, reject) => {
+
+		this.client.keys('*', (err, keys) => {
+			if (err) reject(err);		
+			
+			resolve(keys);
+		});
+	});
+};
+
 Users.prototype.list = function(room) {
 	return new Promise((resolve, reject) => {
 		const active = [];

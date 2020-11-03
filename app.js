@@ -25,8 +25,10 @@ app.use(cors({
 // Routes
 const indexRoute = require('./routes/index');
 const register = require('./auth/register');
+const users = require('./routes/users');
 
 app.use('/', indexRoute);
 app.use('/', register);
+app.use('/', users);
 
 server.listen(process.env.PORT || 3000, () => console.log("Sunucu Başlatıldı!"));

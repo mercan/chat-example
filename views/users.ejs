@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>Users</title>
+</head>
+<body>
+	<h4>Çevrimiçi Kullanıcılar</h4> <hr>
+	<ul class="onlineUser"></ul> <br> <br>
+
+	<h4>Çevrimdışı Kullanıcılar</h4> <hr>
+	<ul class="offlineUser"></ul> 
+
+	<% for (var user of users) { -%>
+		<% if (user.active) { -%>
+			<script>
+				document.querySelector('.onlineUser').innerHTML += `<li><b><%= user.username %></b></li>`;
+			</script>
+		<% } else { -%>
+			<script>
+				document.querySelector('.offlineUser').innerHTML += `<li><%= user.username %></li>`;
+			</script>
+		<% } -%>
+	<% } -%>
+
+</body>
+</html>
