@@ -15,15 +15,16 @@ module.exports = (req, res, next) => {
  	bearerToken = bearer[1];
   req.token = bearerToken;
 
-  const [decode, err]  = [jwt.verify(bearerToken, cfg.SECRET_KEY)];
+  try {
+  	const [decode, err]  = [jwt.verify(bearerToken, cfg.SECRET_KEY)];
 
-	if (err) {
-		return res.status(401).json({ 
+  	req.decode = decode;
+  	next();
+  } catch (err) {
+  	return res.status(401).json({ 
 			code: 401,
 			message: 'Unauthorized!',
 		});
-	}
-		
-	req.decode = decode;
-	next();
+  }
+  
 };

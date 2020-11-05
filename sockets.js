@@ -30,6 +30,12 @@ io.use(socketConnectVerify);
 io.on('connection', socket => { 
 	
 	socket.on('joinRoom', async ({ room }) => {
+		const roomControl = await Room.findOne({ room }, '_id');
+
+		if (!roomControl) {
+			return socket.emit('roomErrorRedirect');
+		}
+	
 		socket.join(room);
 		socket.joinedRoom = room;
 
@@ -51,17 +57,12 @@ io.on('connection', socket => {
     io.to(room).emit('roomUsers', { room, users });
 
     // Herkese gönderiyor.
-  	io.to(room).emit('onlineCount', { onlineCount: [users.length] });
+  	io.to(room).emit('onlineCount', { onlineCount: [users.length] }); // value kısmında noktaya izin vermiyor.
 
   	// Daha önce atılmış mesajlar için.
   	const roomMessages = await Room.findOne({ room }, {
 			messages: 1,
 		});
-
-		if (!roomMessages) {
-			new Room({ room }).save();
-			return;
-		}
 
 		// Kendisine gönderiyor.
 		for (let { username, message, date } of roomMessages.messages) {
@@ -72,7 +73,9 @@ io.on('connection', socket => {
 	socket.on('typing', () => {
 		if (!socket.joinedRoom) return;
 		
-		socket.broadcast.to(socket.joinedRoom).emit('typingUser', { username: socket.decode.username });
+		socket.broadcast.to(socket.joinedRoom).emit('typingUser', {
+			username: socket.decode.username
+		});
 	});
 
 	socket.on('chatMessage', async message => {

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>Create Room</title>
+</head>
+<body>
+
+	<label  for="roomName">Room name :</label>
+	<input  type="text" id="roomName" placeholder="Room name" required minlength="3" autofocus>
+	<button id="createBtn">Create</button>
+	
+	<script>
+		const createBtn = document.querySelector('#createBtn');
+
+		createBtn.addEventListener('click', async () => {
+			const roomName = document.querySelector('#roomName').value;
+
+			// https://chatsocket-example.herokuapp.com
+			const response = await fetch(`https://chatsocket-example.herokuapp.com/api/create_room?name=${roomName}`, {
+				method: 'GET',
+				headers: {
+					'Content-Type': 'application/json; charset=utf-8',
+					'authorization': `Bearer ${localStorage.getItem('auth_token')}`
+				}
+			}).then(response => response.json());
+
+			if (response.code === 201) {
+				location.replace(response.redirect);
+			} else {
+				document.write(JSON.stringify(response));
+			}
+		});
+	</script>	
+</body>
+</html>

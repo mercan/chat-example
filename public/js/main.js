@@ -36,6 +36,10 @@ socket.on('typingUser', ({ username }) => {
 // Join chatroom
 socket.emit('joinRoom', { room });
 
+socket.on('roomErrorRedirect', () => {
+  location.replace('https://chatsocket-example.herokuapp.com');
+});
+
 socket.on('onlineCount', data => {
   onlineCount.innerHTML = `<i class="fas fa-users"> Users ${data.onlineCount}</i>`;
 });

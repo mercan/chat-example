@@ -31,4 +31,9 @@ app.use('/', indexRoute);
 app.use('/', register);
 app.use('/', users);
 
+// API
+const apiCreateRoom = require('./API/createRoom');
+
+app.use('/api', apiCreateRoom);
+
 server.listen(process.env.PORT || 3000, () => console.log("Sunucu Başlatıldı!"));
